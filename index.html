@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TechMek — Coming Soon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#000;
+    --ink:#e8ecf1;
+    --muted:#8893a7;
+    --blue:#1ea7ff;
+    --blue-deep:#0a4ea8;
+    --steel-1:#e8edf3;
+    --steel-2:#6b7682;
+    --steel-3:#2b323b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;width:100%;overflow-x:hidden}
+  body{
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    background:#000;
+    position:relative;
+    min-height:100vh;
+  }
+
+  /* Animated starfield */
+  canvas#stars{position:fixed;inset:0;z-index:0;display:block}
+
+  /* Subtle blue glow under logo */
+  .bg-glow{
+    position:fixed;left:50%;top:42%;transform:translate(-50%,-50%);
+    width:900px;height:900px;max-width:100vw;
+    background:radial-gradient(circle, rgba(30,167,255,.22), rgba(10,78,168,.08) 40%, transparent 70%);
+    filter:blur(30px);
+    z-index:0;pointer-events:none;
+    animation:pulseGlow 6s ease-in-out infinite;
+  }
+  @keyframes pulseGlow{
+    0%,100%{opacity:.8;transform:translate(-50%,-50%) scale(1)}
+    50%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}
+  }
+
+  /* Grid overlay */
+  .grid{
+    position:fixed;inset:0;z-index:1;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(30,167,255,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(30,167,255,.05) 1px, transparent 1px);
+    background-size:70px 70px;
+    mask-image:radial-gradient(ellipse at center, rgba(0,0,0,.9), transparent 75%);
+  }
+
+  .wrap{
+    position:relative;z-index:2;
+    min-height:100vh;
+    display:flex;flex-direction:column;
+    padding:28px 48px;
+  }
+
+  header{display:flex;justify-content:space-between;align-items:center}
+  .brand{
+    display:flex;align-items:center;gap:12px;
+    font-family:'Orbitron',sans-serif;font-weight:900;letter-spacing:.18em;
+    font-size:16px;color:#cfd8e3;
+  }
+  .brand .mini-logo{
+    width:56px;height:40px;object-fit:contain;display:block;
+  }
+  nav{display:flex;gap:28px;font-size:12px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase}
+  nav a{color:inherit;text-decoration:none;transition:color .2s}
+  nav a:hover{color:var(--blue)}
+
+  main{
+    flex:1;
+    display:grid;place-items:center;
+    text-align:center;
+    padding:20px 0 40px;
+  }
+
+  /* Logo showcase */
+  .logo-stage{
+    position:relative;
+    width:min(560px, 88vw);
+    margin:0 auto 10px;
+    filter:drop-shadow(0 20px 60px rgba(30,167,255,.35));
+    animation:rise 1.2s ease-out both;
+  }
+  @keyframes rise{
+    from{opacity:0;transform:translateY(30px) scale(.92)}
+    to{opacity:1;transform:translateY(0) scale(1)}
+  }
+  .logo-stage svg,
+  .logo-stage img{width:100%;height:auto;display:block}
+
+  /* Tagline */
+  .tag{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:8px 18px;border:1px solid rgba(30,167,255,.35);
+    border-radius:999px;font-size:11px;letter-spacing:.4em;
+    text-transform:uppercase;color:var(--blue);
+    background:rgba(30,167,255,.06);backdrop-filter:blur(6px);
+    margin:10px 0 22px;
+  }
+  .tag .dot{
+    width:7px;height:7px;border-radius:50%;background:var(--blue);
+    box-shadow:0 0 10px var(--blue);
+    animation:pulse 1.6s infinite;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:1;transform:scale(1)}
+    50%{opacity:.3;transform:scale(1.4)}
+  }
+
+  h1{
+    font-family:'Orbitron',sans-serif;
+    font-weight:900;
+    font-size:clamp(44px, 9vw, 110px);
+    line-height:.95;
+    letter-spacing:.06em;
+    background:linear-gradient(180deg,#ffffff 0%,#9ecdff 55%,#1ea7ff 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    margin-bottom:10px;
+  }
+  h1 .divider{
+    display:block;width:160px;height:1px;margin:18px auto 0;
+    background:linear-gradient(90deg,transparent,var(--blue),transparent);
+  }
+
+  .sub{
+    font-size:clamp(14px,1.3vw,17px);
+    color:var(--muted);max-width:620px;margin:20px auto 34px;
+    line-height:1.7;font-weight:300;
+  }
+
+  /* Countdown */
+  .countdown{
+    display:flex;gap:14px;justify-content:center;flex-wrap:wrap;
+    margin-bottom:36px;
+  }
+  .unit{
+    min-width:108px;padding:16px 20px;
+    border:1px solid rgba(30,167,255,.18);
+    border-radius:12px;
+    background:linear-gradient(180deg,rgba(30,167,255,.06),rgba(255,255,255,.02));
+    backdrop-filter:blur(12px);
+    position:relative;overflow:hidden;
+  }
+  .unit::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(30,167,255,.6),transparent);
+  }
+  .unit .num{
+    font-family:'Orbitron',sans-serif;font-weight:900;
+    font-size:38px;
+    background:linear-gradient(180deg,#fff,#1ea7ff);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .unit .lbl{
+    font-size:10px;letter-spacing:.4em;text-transform:uppercase;
+    color:var(--muted);margin-top:4px;
+  }
+
+  form.notify{
+    display:flex;gap:10px;justify-content:center;flex-wrap:wrap;
+    max-width:480px;margin:0 auto;
+  }
+  form.notify input{
+    flex:1;min-width:220px;
+    padding:14px 18px;
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.04);
+    border-radius:10px;color:var(--ink);font-size:14px;
+    outline:none;transition:all .2s;font-family:inherit;
+  }
+  form.notify input:focus{
+    border-color:var(--blue);
+    box-shadow:0 0 0 3px rgba(30,167,255,.15);
+  }
+  form.notify button{
+    padding:14px 26px;
+    border:0;border-radius:10px;cursor:pointer;
+    font-family:'Orbitron',sans-serif;font-weight:700;
+    letter-spacing:.2em;font-size:11px;text-transform:uppercase;
+    color:#fff;
+    background:linear-gradient(135deg,var(--blue),var(--blue-deep));
+    box-shadow:0 0 20px rgba(30,167,255,.5);
+    transition:all .2s;
+  }
+  form.notify button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 0 30px rgba(30,167,255,.8);
+  }
+  .msg{margin-top:12px;font-size:13px;color:var(--blue);min-height:18px}
+
+  footer{
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:11px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;
+    padding-top:24px;border-top:1px solid rgba(255,255,255,.05);
+  }
+  .socials{display:flex;gap:12px}
+  .socials a{
+    width:36px;height:36px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.1);
+    display:grid;place-items:center;color:var(--muted);
+    text-decoration:none;transition:all .2s;
+  }
+  .socials a:hover{color:var(--blue);border-color:var(--blue);box-shadow:0 0 14px rgba(30,167,255,.5)}
+  .socials svg{width:14px;height:14px;fill:currentColor}
+
+  @media (max-width:720px){
+    .wrap{padding:20px 18px}
+    nav{display:none}
+    footer{flex-direction:column;gap:14px;text-align:center}
+    .unit{min-width:80px;padding:12px}
+    .unit .num{font-size:28px}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+<div class="bg-glow"></div>
+<div class="grid"></div>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <img class="mini-logo" src="logo.png" alt="TechMek" />
+      <span>TECHMEK</span>
+    </div>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <div>
+      <!-- HERO LOGO -->
+      <div class="logo-stage">
+        <img src="logo.png" alt="TechMek" />
+      </div>
+
+      <span class="tag"><span class="dot"></span>Launching Soon</span>
+
+      <h1>COMING SOON<span class="divider"></span></h1>
+
+      <p class="sub">
+        Engineering the future of technology. <strong style="color:#cfe4ff;font-weight:600">TechMek</strong> is building smarter,
+        faster, and limitless digital solutions — crafted to power tomorrow.
+      </p>
+
+      <div class="countdown" id="countdown">
+        <div class="unit"><div class="num" id="d">00</div><div class="lbl">Days</div></div>
+        <div class="unit"><div class="num" id="h">00</div><div class="lbl">Hours</div></div>
+        <div class="unit"><div class="num" id="m">00</div><div class="lbl">Minutes</div></div>
+        <div class="unit"><div class="num" id="s">00</div><div class="lbl">Seconds</div></div>
+      </div>
+
+      <form class="notify" onsubmit="return notify(event)">
+        <input type="email" id="email" placeholder="Enter your email" required />
+        <button type="submit">Notify Me</button>
+      </form>
+      <div class="msg" id="msg"></div>
+    </div>
+  </main>
+
+  <footer>
+    <div>© <span id="yr"></span> TechMek. All rights reserved.</div>
+    <div class="socials">
+      <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24"><path d="M22 5.8c-.7.3-1.5.6-2.3.7.8-.5 1.5-1.3 1.8-2.2-.8.5-1.7.8-2.6 1C18.1 4.5 17 4 15.8 4c-2.4 0-4.3 1.9-4.3 4.3 0 .3 0 .7.1 1C8 9.1 4.8 7.4 2.6 4.8c-.4.6-.6 1.4-.6 2.2 0 1.5.8 2.8 1.9 3.6-.7 0-1.4-.2-2-.5 0 2.1 1.5 3.8 3.5 4.2-.4.1-.8.2-1.2.2-.3 0-.6 0-.9-.1.6 1.7 2.2 3 4.1 3-1.5 1.2-3.4 1.9-5.5 1.9H1c2 1.3 4.3 2 6.8 2 8.1 0 12.6-6.7 12.6-12.6v-.6c.9-.6 1.6-1.4 2.2-2.3z"/></svg></a>
+      <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 1.2.1 1.8.3 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.2.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 1.2-.3 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.2.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-1.2-.1-1.8-.3-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2-.1-1.2-.1-1.6-.1-4.8s0-3.6.1-4.8c.1-1.2.3-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4 1.2-.1 1.6-.1 4.8-.1zm0 2.2c-3.2 0-3.5 0-4.7.1-1.1.1-1.7.2-2.1.4-.5.2-.9.4-1.3.8-.4.4-.6.8-.8 1.3-.2.4-.3 1-.4 2.1-.1 1.2-.1 1.5-.1 4.7s0 3.5.1 4.7c.1 1.1.2 1.7.4 2.1.2.5.4.9.8 1.3.4.4.8.6 1.3.8.4.2 1 .3 2.1.4 1.2.1 1.5.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.7-.2 2.1-.4.5-.2.9-.4 1.3-.8.4-.4.6-.8.8-1.3.2-.4.3-1 .4-2.1.1-1.2.1-1.5.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.7-.4-2.1-.2-.5-.4-.9-.8-1.3-.4-.4-.8-.6-1.3-.8-.4-.2-1-.3-2.1-.4-1.2-.1-1.5-.1-4.7-.1zm0 3.7a3.9 3.9 0 110 7.8 3.9 3.9 0 010-7.8zm0 6.4a2.5 2.5 0 100-5 2.5 2.5 0 000 5zm5-6.6a.9.9 0 11-1.8 0 .9.9 0 011.8 0z"/></svg></a>
+      <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.22 8h4.56v14H.22V8zm7.6 0h4.37v1.92h.06c.61-1.15 2.1-2.36 4.32-2.36 4.62 0 5.47 3.04 5.47 6.99V22h-4.56v-6.58c0-1.57-.03-3.6-2.2-3.6-2.2 0-2.54 1.72-2.54 3.49V22H7.82V8z"/></svg></a>
+    </div>
+  </footer>
+</div>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // Countdown: 15 days from now
+  const target = new Date();
+  target.setDate(target.getDate() + 15);
+
+  function pad(n){return n.toString().padStart(2,'0')}
+  function tick(){
+    let diff = Math.max(0, target - new Date());
+    const d = Math.floor(diff/86400000); diff -= d*86400000;
+    const h = Math.floor(diff/3600000); diff -= h*3600000;
+    const m = Math.floor(diff/60000); diff -= m*60000;
+    const s = Math.floor(diff/1000);
+    d00=document.getElementById('d');h00=document.getElementById('h');
+    m00=document.getElementById('m');s00=document.getElementById('s');
+    d00.textContent=pad(d);h00.textContent=pad(h);
+    m00.textContent=pad(m);s00.textContent=pad(s);
+  }
+  tick(); setInterval(tick,1000);
+
+  function notify(e){
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    document.getElementById('msg').textContent = `Thanks! We'll notify ${email} at launch.`;
+    document.getElementById('email').value='';
+    return false;
+  }
+
+  // Particle / starfield
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  let w,h,stars;
+  function resize(){
+    w = canvas.width = innerWidth;
+    h = canvas.height = innerHeight;
+    stars = Array.from({length: Math.min(160, Math.floor(w*h/14000))}, ()=>({
+      x:Math.random()*w, y:Math.random()*h,
+      z:Math.random()*.8+.2,
+      r:Math.random()*1.3+.2,
+      vx:(Math.random()-.5)*.12,
+      vy:(Math.random()-.5)*.12,
+    }));
+  }
+  resize(); addEventListener('resize', resize);
+
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    for(let i=0;i<stars.length;i++){
+      const a = stars[i];
+      a.x += a.vx; a.y += a.vy;
+      if(a.x<0)a.x=w;if(a.x>w)a.x=0;
+      if(a.y<0)a.y=h;if(a.y>h)a.y=0;
+      for(let j=i+1;j<stars.length;j++){
+        const b = stars[j];
+        const dx=a.x-b.x, dy=a.y-b.y, dist=Math.hypot(dx,dy);
+        if(dist<110){
+          ctx.strokeStyle = `rgba(30,167,255,${(1-dist/110)*.11})`;
+          ctx.lineWidth = .5;
+          ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+        }
+      }
+      ctx.beginPath();
+      ctx.arc(a.x,a.y,a.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(200,225,255,${a.z})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+</script>
+</body>
+</html>
